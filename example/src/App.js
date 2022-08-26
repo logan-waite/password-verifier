@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { ExampleComponent } from 'password-verifier'
+import { PasswordForm } from 'password-verifier'
 import 'password-verifier/dist/index.css'
 
 const App = () => {
-  return <ExampleComponent text="Create React Library Example 😄" />
+  return <PasswordForm />
 }
 
 export default App
