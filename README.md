@@ -1,30 +1,11 @@
 # password-verifier
 
-> Made with create-react-library
+A small library for verifying passwords. Exposes a simple form (`PasswordForm`) with a submit button and two inputs to type your password and confirm it, and also exposes the actual function (`validatePassword`) for verifying two given strings both meet the requirements outlined below and match each other for implementation with your own components.
 
-[![NPM](https://img.shields.io/npm/v/password-verifier.svg)](https://www.npmjs.com/package/password-verifier) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+Password Requirements:
 
-## Install
-
-```bash
-npm install --save password-verifier
-```
-
-## Usage
-
-```jsx
-import React, { Component } from 'react'
-
-import MyComponent from 'password-verifier'
-import 'password-verifier/dist/index.css'
-
-class Example extends Component {
-  render() {
-    return <MyComponent />
-  }
-}
-```
-
-## License
-
-MIT © [logan-waite](https://github.com/logan-waite)
+- At least 6 characters
+- At least 1 uppercase character
+- At least 1 lowercase character
+- At least 1 number
+- At least 1 of these special characters: `!@#$%^&*()_-+={[}]|:;"'<,>.`
