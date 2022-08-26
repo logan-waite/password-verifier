@@ -1,6 +1,21 @@
 /* add css module styles here (optional) */
 
-.form-wrapper {
+.wrapper {
   display: flex;
   flex-direction: column;
+  width: 300px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.submit {
+  font-size: 24px;
 }

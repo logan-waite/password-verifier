@@ -1,64 +1,64 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styles from './styles.module.css'
 
 function getFormValueFor(name, event) {
   return event.target[name]?.value
 }
 
+function testConditions(...tests) {
+  return function runTests(password) {
+    return tests.reduce((errors, test) => {
+      const error = test(password)
+      if (error) {
+        errors.push(error)
+      }
+      return errors
+    }, [])
+  }
+}
+
 export function validatePassword(password, confirmPassword) {
-  // both inputs match
-  // min length of 6
-  // >= 1 uppercase character
-  // >= 1 lowercase character
-  // >= 1 number
-  // >= 1 special character
-  //    - !@#$%^&*()_-+={[}]|:;""<,>.
-  const errors = []
-  if (password !== confirmPassword) {
-    errors.push('Passwords do not match')
-  }
-
-  if (password.length < 6) {
-    errors.push('Password needs at least 6 characters')
-  }
-
-  if (!/[A-Z]/.test(password)) {
-    errors.push('Password needs at least 1 uppercase character')
-  }
-
-  if (!/[a-z]/.test(password)) {
-    errors.push('Password needs at least 1 lowercase character')
-  }
-
-  if (!/[/0-9]/.test(password)) {
-    errors.push('Password needs at least 1 number')
-  }
-
-  if (!/[!@#$%^&*()_\-+={[}\]|:;""<,>.]/.test(password)) {
-    errors.push(
-      `Password needs at least 1 of these special characters: !@#$%^&*()_-+={[}]|:;"'<,>.`
-    )
-  }
+  const errors = testConditions(
+    (p) => p !== confirmPassword && 'Passwords do not match',
+    (p) => p.length < 6 && 'Password needs at least 6 characters',
+    (p) => !/[A-Z]/.test(p) && 'Password needs at least 1 uppercase character',
+    (p) => !/[a-z]/.test(p) && 'Password needs at least 1 lowercase character',
+    (p) => !/[/0-9]/.test(p) && 'Password needs at least 1 number',
+    (p) => !/[!@#$%^&*()_\-+={[}\]|:;""<,>.]/.test(p) && `Password needs at least 1 of these special characters: !@#$%^&*()_-+={[}]|:;"'<,>.`
+  )(password)
 
   return errors
 }
 
-function onPasswordSubmit(event) {
-  event.preventDefault()
-  const password = getFormValueFor('password', event)
-  const confirmPassword = getFormValueFor('confirmPassword', event)
+const SuccessText = () => <h4>Password verified successfully!</h4>
 
-  const errors = validatePassword(password, confirmPassword)
-  console.log(errors)
-  return errors
+const ErrorList = ({errors}) => (<ul>
+  {errors.map((e) => <li>{e}</li>)}
+</ul>)
+
+function onPasswordSubmit(setErrorsCallback) {
+  return function _onSubmit(event) {
+    event.preventDefault()
+    const password = getFormValueFor('password', event)
+    const confirmPassword = getFormValueFor('confirmPassword', event)
+  
+    const errors = validatePassword(password, confirmPassword)
+    setErrorsCallback(errors)
+  }
 }
 
 export const PasswordForm = () => {
+  const [errors, setErrors] = useState(undefined)
   return (
-    <form className={styles['form-wrapper']} onSubmit={onPasswordSubmit}>
-      <input type='password' name='password' />
-      <input type='password' name='confirmPassword' />
-      <button type='submit'>Submit</button>
-    </form>
+    <div className={styles.wrapper}>
+      <form className={styles.form} onSubmit={onPasswordSubmit(setErrors)}>
+        <input type='password' name='password' className={styles.input}/>
+        <input type='password' name='confirmPassword' className={styles.input}/>
+        <button type='submit' className={styles.submit}>Submit</button>
+      </form>
+      <div style={{display: errors === undefined ? 'none' : 'block'}}>
+        { errors?.length > 0 ? <ErrorList errors={errors} /> : <SuccessText /> }
+      </div>
+    </div>
   )
 }
